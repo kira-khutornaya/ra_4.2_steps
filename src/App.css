@@ -20,6 +20,11 @@ body {
 .StepsForm {
   display: flex;
   align-items: flex-end;
+  justify-content: space-between;
+}
+
+.StepsForm__group {
+  width: 210px;
 }
 
 .StepsForm__field {

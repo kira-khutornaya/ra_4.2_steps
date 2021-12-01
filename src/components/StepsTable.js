@@ -3,7 +3,8 @@ import PropTypes from 'prop-types';
 import StepsList from './StepsList';
 
 function StepsTable({ stepsData, onEdit, onDelete }) {
-  stepsData.sort((a, b) => b.date.getTime() - a.date.getTime());
+  const sortData = [...stepsData];
+  sortData.sort((a, b) => b.date.getTime() - a.date.getTime());
 
   return (
     <div className="StepsTable">
@@ -14,7 +15,7 @@ function StepsTable({ stepsData, onEdit, onDelete }) {
       </div>
 
       <StepsList
-        data={stepsData}
+        data={sortData}
         onEdit={onEdit}
         onDelete={onDelete}
       />

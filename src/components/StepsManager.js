@@ -1,56 +1,81 @@
 import React, { useState } from 'react';
 import shortid from 'shortid';
+import INITIAL_FORM_STATE from '../StepsManager.constants';
+import validateFields from '../functions/validateFields';
 import StepsForm from './StepsForm';
 import StepsTable from './StepsTable';
 
 function StepsManager() {
-  const clearForm = {
-    date: '',
-    distance: '',
-    edit: false,
-  };
-  const [form, setForm] = useState(clearForm);
+  const [form, setForm] = useState(INITIAL_FORM_STATE);
   const [stepsData, setData] = useState([]);
+  const [editId, setEditId] = useState(null);
 
   const onSubmit = (e) => {
     e.preventDefault();
-    if (!form.date || !form.distance) return;
+    const { date, distance, edit } = form;
+    if (!validateFields(date, distance)) return;
 
-    const formatDate = form.date.split('.');
-    const date = new Date(formatDate[2], formatDate[1] - 1, formatDate[0]);
+    const dateArr = date.split('.');
+    const formatDate = new Date(dateArr[2], dateArr[1] - 1, dateArr[0]);
+    const dateEl = stepsData.find((el) => el.date.getTime() === formatDate.getTime());
 
-    const dateIndex = stepsData.findIndex((el) => el.date.getTime() === date.getTime());
-    if (dateIndex === -1) {
+    if (!dateEl && !edit) {
       setData((prev) => [...prev, {
         id: shortid.generate(),
-        date,
-        distance: +(form.distance),
+        date: formatDate,
+        distance: Number(distance),
         edit: false,
       }]);
-    } else if (form.edit) {
-      stepsData[dateIndex].distance = +(form.distance);
+    } else if (!dateEl && edit) {
+      const updatedData = stepsData.map((el) => (
+        el.id === editId ? {
+          ...el,
+          date: formatDate,
+          distance: Number(distance),
+        } : el
+      ));
+
+      setData(updatedData);
+    } else if (dateEl && !edit) {
+      const updatedData = stepsData.map((el) => (
+        el.id === dateEl.id ? {
+          ...el, distance: dateEl.distance + Number(distance),
+        } : el
+      ));
+
+      setData(updatedData);
     } else {
-      stepsData[dateIndex].distance += +(form.distance);
+      const updatedData = stepsData.map((el) => (
+        el.id === dateEl.id ? {
+          ...el,
+          date: formatDate,
+          distance: Number(distance),
+        } : el
+      ));
+
+      setData(updatedData);
     }
 
-    setForm(clearForm);
+    setForm(INITIAL_FORM_STATE);
   };
 
   const onChange = ({ target }) => {
     setForm((prev) => ({ ...prev, [target.name]: target.value }));
   };
 
-  const onDelete = (id) => () => {
+  const onDelete = (id) => {
     setData(() => stepsData.filter((el) => el.id !== id));
+    setForm(INITIAL_FORM_STATE);
   };
 
-  const onEdit = (id) => () => {
+  const onEdit = (id) => {
     const result = stepsData.find((el) => el.id === id);
     setForm({
       date: result.date.toLocaleDateString(),
       distance: result.distance,
       edit: true,
     });
+    setEditId(id);
   };
 
   return (

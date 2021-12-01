@@ -2,7 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 
 function StepsListItem({ item, onEdit, onDelete }) {
-  const { date, distance } = item;
+  const { id, date, distance } = item;
 
   return (
     <>
@@ -12,14 +12,14 @@ function StepsListItem({ item, onEdit, onDelete }) {
         <button
           className="StepsListItem__editing button"
           type="button"
-          onClick={onEdit(item.id)}
+          onClick={() => onEdit(id)}
         >
           ✎
         </button>
         <button
           className="StepsListItem__removing button"
           type="button"
-          onClick={onDelete(item.id)}
+          onClick={() => onDelete(id)}
         >
           ✘
         </button>

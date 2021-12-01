@@ -9,12 +9,13 @@ function StepsForm({ form, onSubmit, onChange }) {
         onSubmit={onSubmit}
       >
         <div className="StepsForm__group">
-          <label htmlFor="date">Дата (ДД.ММ.ГГ)</label>
+          <label htmlFor="date">Дата</label>
           <input
             className="StepsForm__field"
             id="date"
             type="text"
             name="date"
+            placeholder="ДД.ММ.ГГ"
             value={form.date}
             onChange={onChange}
           />
@@ -26,6 +27,7 @@ function StepsForm({ form, onSubmit, onChange }) {
             id="distance"
             type="text"
             name="distance"
+            placeholder="0"
             value={form.distance}
             onChange={onChange}
           />
